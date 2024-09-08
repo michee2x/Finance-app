@@ -42,7 +42,7 @@ window.location.href = url
     <form className="form-signin" onSubmit={submit} style={{display:"flex", justifyItems:"center", flexDirection:"column", width:"100vw", height:"100vh"}}>       
       <h2 className="form-signin-heading" style={{textAlign:"center"}}>transaction  form</h2>
       <input type="email" className="form-control" value={data.email} onChange={(e) => setData({...data, email:e.target.value})} placeholder="Email Address" />
-      <input type="text" className="form-control" value={data.amount} onChange={(e) => setData({...data, amount:e.target.value})} placeholder="amount"/>      
+      <input type="number" className="form-control" value={data.amount} onChange={(e) => setData({...data, amount:e.target.value})} placeholder="amount"/>      
       
       <button className="button" type="submit">transfer</button>   
     </form>
