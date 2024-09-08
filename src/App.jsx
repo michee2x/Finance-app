@@ -9,13 +9,29 @@ function App() {
  const submit = async (e) => {
   e.preventDefault()
   try{
-    const res = await fetch("http://localhost:8000", {
+    const res = await fetch("https://api.paystack.co/transaction/initialize", {
       method:"POST",
-      headers:{"Content-Type" : "application/json"},
+      headers: {
+        'Authorization': 'Bearer sk_test_0d2ad53918843f4491243f3f9b5b8d0ffa97d7fe',
+        'Content-Type': 'application/json'
+    },
       body:JSON.stringify({
-        ...data
-      })
+    "email": "customer@example.com",
+    "amount": 100000,
+    "callback_url": "http://yourdomain.com/callback"
+})
     })
+if(!res.ok){
+throw new Error(res)
+}
+
+if(res.ok){
+   const Data = await res.json()
+   const url = Data?.data?.authorization_url;
+window.location.href = url
+
+
+}
 
   } catch (err) {
     console.log("this is the error in app.jsx", err)
