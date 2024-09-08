@@ -2,6 +2,8 @@ import { useState } from 'react'
 import './App.css'
 
 function App() {
+ const [success, setSuccess] = useState("")
+const [reference, setReference] = useState("")
  const [data, setData] = useState({
   email:"", amount:""
  })
@@ -17,7 +19,7 @@ function App() {
     },
       body:JSON.stringify({
     "email": `${data.email}`,
-    "amount": `1000`,
+    "amount": `${data.amount}`,
     "callback_url": "https://finance-app-5lj8.onrender.com"
 })
     })
@@ -28,8 +30,8 @@ throw new Error(res)
 if(res.ok){
    const Data = await res.json()
    const url = Data?.data?.authorization_url;
+setReference(Data?.data?.reference)
 window.location.href = url
-
 
 }
 
@@ -37,6 +39,29 @@ window.location.href = url
     console.log("this is the error in app.jsx", err)
   }
  }
+
+const checkSuccess = () => {
+try{
+
+const res = await fetch("https://api.paystack.co/transaction/verify/${reference}", {
+      headers: {
+        'Authorization': 'Bearer sk_test_0d2ad53918843f4491243f3f9b5b8d0ffa97d7fe',
+        'Content-Type': 'application/json'
+    }
+    })
+if(!res.ok){
+throw new Error(res)
+}
+
+if(res.ok){
+const data = await res.json()
+
+}
+} catch (err){
+console.log(err)
+}
+
+}
   return (
     <>
     <form className="form-signin" onSubmit={submit} style={{display:"flex", justifyItems:"center", flexDirection:"column", width:"100vw", height:"100vh"}}>       
@@ -46,6 +71,11 @@ window.location.href = url
       
       <button className="button" type="submit">transfer</button>   
     </form>
+
+{ reference && <div>
+{success && <div> {success} </div>}
+<button className="button" type="submit" onClick={checkSuccess}>transfer status</button>  
+</div>}
     </>
   )
 }
