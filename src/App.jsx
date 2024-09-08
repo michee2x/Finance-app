@@ -65,6 +65,7 @@ console.log(err)
 }
   return (
     <>
+<h1>Pay to Averoid</h1>
     <form className="form-signin" onSubmit={submit} style={{display:"flex", justifyItems:"center", flexDirection:"column", width:"100vw", height:"100vh"}}>       
       <h2 className="form-signin-heading" style={{textAlign:"center"}}>transaction  form</h2>
       <input type="email" className="form-control" value={data.email} onChange={(e) => setData({...data, email:e.target.value})} placeholder="Email Address" />
