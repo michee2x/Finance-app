@@ -40,7 +40,7 @@ window.location.href = url
   }
  }
 
-const checkSuccess = () => {
+const checkSuccess = async () => {
 try{
 
 const res = await fetch("https://api.paystack.co/transaction/verify/${reference}", {
@@ -74,7 +74,7 @@ console.log(err)
     </form>
 
 { reference && <div>
-{Object.keys(success).length > 0 && <div> {JSON.stringify(success, null, 2)} </div>}
+{Object.keys(success).length > 0 && <div> {JSON.stringify(success)} </div>}
 <button className="button" type="submit" onClick={checkSuccess}>transfer status</button>  
 </div>}
     </>
