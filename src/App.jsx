@@ -3,7 +3,7 @@ import './App.css'
 
 function App() {
  const [data, setData] = useState({
-  name:"", email:"", password:""
+  email:"", amount:""
  })
 
  const submit = async (e) => {
@@ -16,9 +16,9 @@ function App() {
         'Content-Type': 'application/json'
     },
       body:JSON.stringify({
-    "email": "customer@example.com",
-    "amount": 100000,
-    "callback_url": "http://yourdomain.com/callback"
+    "email": `${data.email}`,
+    "amount": `${data.amount}`,
+    "callback_url": "https://finance-app-5lj8.onrender.com"
 })
     })
 if(!res.ok){
@@ -41,9 +41,8 @@ window.location.href = url
     <>
     <form className="form-signin" onSubmit={submit} style={{display:"flex", justifyItems:"center", flexDirection:"column", width:"100vw", height:"100vh"}}>       
       <h2 className="form-signin-heading" style={{textAlign:"center"}}>transaction  form</h2>
-      <input type="text" className="form-control" value={data.name} onChange={(e) => setData({...data, name:e.target.value})} placeholder="name" />
       <input type="email" className="form-control" value={data.email} onChange={(e) => setData({...data, email:e.target.value})} placeholder="Email Address" />
-      <input type="text" className="form-control" value={data.password} onChange={(e) => setData({...data, password:e.target.value})} placeholder="amount"/>      
+      <input type="text" className="form-control" value={data.amount} onChange={(e) => setData({...data, amount:e.target.value})} placeholder="amount"/>      
       
       <button className="button" type="submit">transfer</button>   
     </form>
