@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 
 function App() {
- const [success, setSuccess] = useState("")
+ const [success, setSuccess] = useState({})
 const [reference, setReference] = useState("")
  const [data, setData] = useState({
   email:"", amount:""
@@ -55,6 +55,7 @@ throw new Error(res)
 
 if(res.ok){
 const data = await res.json()
+setSuccess(data)
 
 }
 } catch (err){
@@ -73,7 +74,7 @@ console.log(err)
     </form>
 
 { reference && <div>
-{success && <div> {success} </div>}
+{Object.keys(success).length > 0 && <div> {JSON.stringify(success, null, 2)} </div>}
 <button className="button" type="submit" onClick={checkSuccess}>transfer status</button>  
 </div>}
     </>
