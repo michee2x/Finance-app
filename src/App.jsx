@@ -74,7 +74,7 @@ console.log(err)
     </form>
 
 { reference && <div>
-{Object.keys(success).length > 0 && <div> {JSON.stringify(success)} </div>}
+{Object.keys(success).length > 0 && <div> {JSON.stringify(success, null, 2)} </div>}
 <button className="button" type="submit" onClick={checkSuccess}>transfer status</button>  
 </div>}
     </>
