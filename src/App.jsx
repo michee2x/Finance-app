@@ -17,7 +17,7 @@ function App() {
     },
       body:JSON.stringify({
     "email": `${data.email}`,
-    "amount": `${data.amount}`,
+    "amount": `1000`,
     "callback_url": "https://finance-app-5lj8.onrender.com"
 })
     })
