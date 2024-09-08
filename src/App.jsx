@@ -5,7 +5,7 @@ function App() {
  const [success, setSuccess] = useState({})
 const [reference, setReference] = useState("")
  const [data, setData] = useState({
-  email:"", amount:""
+  email:"", amount:0
  })
 
  const submit = async (e) => {
@@ -19,7 +19,7 @@ const [reference, setReference] = useState("")
     },
       body:JSON.stringify({
     "email": `${data.email}`,
-    "amount": `${data.amount}`,
+    "amount": `${data.amount * 100}`,
     "callback_url": "https://finance-app-5lj8.onrender.com"
 })
     })
