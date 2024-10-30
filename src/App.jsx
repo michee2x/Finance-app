@@ -1,87 +1,83 @@
-import { useState } from 'react'
-import './App.css'
+import React, { useState } from "react";
+import "./App.css";
 
 function App() {
- const [success, setSuccess] = useState({})
-const [reference, setReference] = useState("")
- const [data, setData] = useState({
-  email:"", amount:0
- })
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [conversation, setConversation] = useState([]);
 
- const submit = async (e) => {
-  e.preventDefault()
-  try{
-    const res = await fetch("https://api.paystack.co/transaction/initialize", {
-      method:"POST",
-      headers: {
-        'Authorization': 'Bearer sk_test_0d2ad53918843f4491243f3f9b5b8d0ffa97d7fe',
-        'Content-Type': 'application/json'
-    },
-      body:JSON.stringify({
-    "email": `${data.email}`,
-    "amount": `${data.amount * 100}`,
-    "callback_url": "https://finance-app-5lj8.onrender.com"
-})
-    })
-if(!res.ok){
-throw new Error(res)
-}
+  const handleSend = async () => {
+    if (input.trim() === "") return;
 
-if(res.ok){
-   const Data = await res.json()
-   const url = Data?.data?.authorization_url;
-setReference(Data?.data?.reference)
-window.location.href = url
+    // Add user message to the chat UI
+    const newMessages = [...messages, { text: input, sender: "user" }];
+    setMessages(newMessages);
+    setInput("");
 
-}
+    // Update conversation state for context
+    const userMessage = { role: "user", content: input };
+    const updatedConversation = [...conversation, userMessage];
 
-  } catch (err) {
-    console.log("this is the error in app.jsx", err)
-  }
- }
-
-const checkSuccess = async () => {
-try{
-
-const res = await fetch("https://api.paystack.co/transaction/verify/${reference}", {
-      headers: {
-        'Authorization': 'Bearer sk_test_0d2ad53918843f4491243f3f9b5b8d0ffa97d7fe',
-        'Content-Type': 'application/json'
+    try {
+      const botMessage = await fetchChatGPTResponse(updatedConversation);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: botMessage, sender: "bot" },
+      ]);
+      setConversation([...updatedConversation, { role: "assistant", content: botMessage }]);
+    } catch (error) {
+      console.error("Error fetching response from API:", error);
     }
-    })
-if(!res.ok){
-throw new Error(res)
-}
+  };
 
-if(res.ok){
-const data = await res.json()
-setSuccess(data)
+  // Custom fetch function to call OpenAI API
+  const fetchChatGPTResponse = async (conversation) => {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: conversation,
+      }),
+    });
 
-}
-} catch (err){
-console.log(err)
-}
+    if (!response.ok) {
+      throw new Error("Failed to fetch response from ChatGPT API");
+    }
 
-}
+    const data = await response.json();
+    return data.choices[0].message.content;
+  };
+
   return (
-    <>
-<h1>Pay to Averoid</h1>
-    <form className="form-signin" onSubmit={submit} style={{display:"flex", justifyItems:"center", flexDirection:"column", width:"100vw", height:"100vh"}}>       
-      <h2 className="form-signin-heading" style={{textAlign:"center"}}>transaction  form</h2>
-      <input type="email" className="form-control" value={data.email} onChange={(e) => setData({...data, email:e.target.value})} placeholder="Email Address" />
-      <input type="number" className="form-control" value={data.amount} onChange={(e) => setData({...data, amount:e.target.value})} placeholder="amount"/>      
-      
-      <button className="button" type="submit">transfer</button>   
-    </form>
-
-{ reference && <div>
-{Object.keys(success).length > 0 && <div> {JSON.stringify(success, null, 2)} </div>}
-<button className="button" type="submit" onClick={checkSuccess}>transfer status</button>  
-</div>}
-    </>
-  )
+    <div className="chat-container">
+      <div className="chat-box">
+        <div className="messages">
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`message ${message.sender === "user" ? "user" : "bot"}`}
+            >
+              {message.text}
+            </div>
+          ))}
+        </div>
+        <div className="input-container">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Type your message..."
+          />
+          <button onClick={handleSend}>Send</button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default App
-//        <input type="text" classNameName='input' value={data.name} onChange={(e) => setData({...data, name:e.target.value})}/>
-       
+export default App;
