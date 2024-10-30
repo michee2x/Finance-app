@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './App.css';
+import './ChatComponent.css';
 
 const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
@@ -9,7 +9,6 @@ const ChatComponent = () => {
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
-    // Add user message to the message list
     const userMessage = { role: "user", content: input };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInput("");
@@ -25,12 +24,11 @@ const ChatComponent = () => {
     }
   };
 
-  // Custom function to interact with ChatGPT API using fetch
   const fetchChatGPTResponse = async (conversation) => {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer YOUR_OPENAI_API_KEY`,
+        "Authorization": `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
